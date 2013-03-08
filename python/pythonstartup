@@ -1,0 +1,29 @@
+import readline
+import rlcompleter
+import atexit
+import os
+import MySQLdb
+from MySQLdb.cursors import DictCursor
+
+from cybozu.cydec import *
+from cybozu.cydec.domaindb import *
+from cybozu.square.volumedb import VolumeDB
+
+# Tab completion
+readline.parse_and_bind('tab: complete')
+
+# History file
+histfile = os.path.join(os.environ['HOME'], '.pythonhistory')
+try:
+    readline.read_history_file(histfile)
+except IOError:
+    pass
+atexit.register(readline.write_history_file, histfile)
+
+parser = get_optparser('')
+(options, args) = parser.parse_args()
+(hdb, ddb) = setup_db()
+vdb = VolumeDB()
+vdb.connect(hdb)
+
+del os, histfile, readline, rlcompleter, atexit
